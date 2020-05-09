@@ -65,14 +65,21 @@ export const Story = () => {
         </thead>
 
         <tbody>
-          {stories.map((story) => {
+          {stories ? stories.map((story) => {
             return (<tr key={story.objectID} onClick={(e) => upVote(e, story)}>
               <td>{story.num_comments || '--'}</td>
               <td>{story.points || '--'}</td>
               <td> <span className="glyphicon glyphicon-triangle-top" value={story.points}></span></td>
               <td>{story.title || '--'}</td>
             </tr>)
-          })}
+          }) :
+            <div className="d-flex justify-content-center">
+              <div className="spinner-border" role="status">
+                <span classN="sr-only">Loading...</span>
+              </div>
+            </div>
+
+          }
         </tbody>
 
       </table>
