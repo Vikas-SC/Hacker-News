@@ -4,13 +4,14 @@ import { getAllStories } from '../services/hnApi';
 
 import { localStore } from '../utils/localStore';
 
+import LineChart from './lineChart'
+
 import '../styles/style.scss';
 
 export const Story = () => {
   const [stories, setStories] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [disable, setDisable] = useState(true);
-
   useEffect(() => {
     const storiesFromLocalStorage = localStore.getNews();
     if (!storiesFromLocalStorage) {
@@ -19,6 +20,7 @@ export const Story = () => {
         const hits = data.data.hits;
         localStore.setNews(hits);
         setStories(hits);
+
       });
     } else {
       setStories(storiesFromLocalStorage);
@@ -53,48 +55,56 @@ export const Story = () => {
     localStore.setNews(updatedStories);
   }
   return (
-    <div className="container">
-      <table className="table table-striped" id="newsTable">
-        <thead className="tableHead">
-          <tr>
-            <th>Comments</th>
-            <th>Vote Count</th>
-            <th>Up Vote</th>
-            <th>News Details</th>
-          </tr>
-        </thead>
+    <>
+      <div className="container">
+        <table className="table table-striped" id="newsTable">
+          <thead className="tableHead">
+            <tr>
+              <th>Comments</th>
+              <th>Vote Count</th>
+              <th>Up Vote</th>
+              <th>News Details</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {stories ? stories.map((story) => {
-            return (<tr key={story.objectID} onClick={(e) => upVote(e, story)}>
-              <td>{story.num_comments || '--'}</td>
-              <td>{story.points || '--'}</td>
-              <td> <span className="glyphicon glyphicon-triangle-top" value={story.points}></span></td>
-              <td>{story.title || '--'}</td>
-            </tr>)
-          }) :
-            <div className="d-flex justify-content-center">
-              <div className="spinner-border" role="status">
-                <span classN="sr-only">Loading...</span>
+          <tbody>
+            {stories ? stories.map((story) => {
+              return (<tr key={story.objectID} onClick={(e) => upVote(e, story)}>
+                <td>{story.num_comments || '--'}</td>
+                <td>{story.points || '--'}</td>
+                <td> <span className="glyphicon glyphicon-triangle-top" value={story.points}></span></td>
+                <td>{story.title || '--'}</td>
+              </tr>)
+            }) :
+              <div className="d-flex justify-content-center">
+                <div className="spinner-border" role="status">
+                  <span classN="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
 
-          }
-        </tbody>
+            }
+          </tbody>
 
-      </table>
-      <div className="paginationFloat">
-        <nav aria-label="Page navigation example">
-          <ul className="pagination justify-content-end">
-            <li className={`page-item ${disable ? 'disabled' : ''}`}>
-              <a className="page-link" onClick={() => prevNews()}>Previous</a>
-            </li>
-            <li className="page-item">
-              <span className="page-link" onClick={() => nextNews()}>Next</span>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </div >
+        </table>
+        <div className="paginationFloat">
+          <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content-end">
+              <li className={`page-item ${disable ? 'disabled' : ''}`}>
+                <a className="page-link" onClick={() => prevNews()}>Previous</a>
+              </li>
+              <li className="page-item">
+                <span className="page-link" onClick={() => nextNews()}>Next</span>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div >
+      {
+        stories.length > 0 ?
+          <div className="container">
+            <LineChart stories={stories} />
+          </div> : ''
+      }
+    </>
   )
 }
