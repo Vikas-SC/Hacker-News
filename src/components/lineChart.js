@@ -24,6 +24,9 @@ class LineChart extends Component {
           title: {
             text: 'VOTE',
           },
+          axisBorder: {
+            show: true,
+          },
         }
       },
       series: [
