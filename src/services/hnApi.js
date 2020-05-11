@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://hn.algolia.com';
+const baseUrl = 'https://hn.algolia.com';
 
 let storiesUrl = '';
 
