@@ -44,15 +44,23 @@ export const Story = () => {
 
   const upVote = (event, story) => {
     event.stopPropagation();
-    const storedStories = localStore.getNews();
-    const updatedStories = storedStories.map((upVoteStory) => {
-      if (upVoteStory.objectID === story.objectID) {
-        upVoteStory.points += 1;
-      }
-      return upVoteStory;
-    });
-    setStories(updatedStories);
-    localStore.setNews(updatedStories);
+    const ID = event.target.getAttribute('id');
+    let storedStories = localStore.getNews();
+
+    if (ID === "upVote") {
+      storedStories = storedStories.map((upVoteStory) => {
+        if (upVoteStory.objectID === story.objectID) {
+          upVoteStory.points += 1;
+        }
+        return upVoteStory;
+      });
+    }
+    if (ID === "hide") {
+      var removeIndex = storedStories.map((item) => item.objectID).indexOf(story.objectID);
+      storedStories.splice(removeIndex, 1);
+    }
+    setStories(storedStories);
+    localStore.setNews(storedStories);
   }
   return (
     <>
@@ -72,8 +80,8 @@ export const Story = () => {
               return (<tr key={story.objectID} onClick={(e) => upVote(e, story)}>
                 <td>{story.num_comments || '--'}</td>
                 <td>{story.points || '--'}</td>
-                <td> <span className="glyphicon glyphicon-triangle-top" value={story.points}></span></td>
-                <td>{story.title || '--'}</td>
+                <td> <span id="upVote" className="glyphicon glyphicon-triangle-top pointer" value={story.points}></span></td>
+                <td><span className="title">{story.title || '--'}</span>  | by <span className="makeBold">{story.author}</span> | <span id='hide' className="pointer makeBold">[ hide ]</span></td>
               </tr>)
             }) :
               <div className="d-flex justify-content-center">
